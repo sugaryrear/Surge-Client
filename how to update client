@@ -1,0 +1,4 @@
+1) zip up the cache (the interior of it) and call it .ZodianXv2.zip and upload it to dropbox
+2) in Configuration.java change production to 'true'. go to gradle and press shadowjar. this will create a file in build/libs called 'app'
+3) go to ur folder that has JRE and app and zip up both of those into .zodianxlauncher.exe and upload to dropbox
+4) launch4j: outputfile: ZodianX.exe     upload it to dropboxs

@@ -1,0 +1,19 @@
+package com.client.utilities;
+
+public class PointInSpace {
+    private int x;
+    private int y;
+
+    public PointInSpace(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+}
