@@ -5,6 +5,7 @@ import com.client.model.rt7_anims.SkeletalAnimBase;
 public final class AnimBase {
     SkeletalAnimBase skeletal_animbase;
     public int count;
+
     /**
      *
      * @param highrev As in 700 pre-skeletal rs3
@@ -43,6 +44,18 @@ public final class AnimBase {
             }
         }
     }
+    public AnimBase(Buffer stream) {
+        int anInt341 = stream.readUShort();
+        transform_types  = new int[anInt341];
+        labels  = new int[anInt341][];
+        for(int j = 0; j < anInt341; j++)
+            transform_types[j] = stream.readUShort();
+        for(int j = 0; j < anInt341; j++)
+            labels[j] = new int[stream.readUShort()];
+        for(int j = 0; j < anInt341; j++)
+            for(int l = 0; l < labels[j].length; l++)
+                labels[j][l] = stream.readUShort();
+    }
 
     private AnimBase() {
 
@@ -62,7 +75,20 @@ public final class AnimBase {
                 base.labels[j][l] = packet.readUShort();
         return base;
     }
-
+    public static AnimBase createchatheads(Buffer packet) {
+        AnimBase base = new AnimBase();
+        base.count = packet.readUShort();
+        base.transform_types = new int[base.count];
+        base.labels = new int[base.count][];
+        for(int j = 0; j < base.count; j++)
+            base.transform_types[j] = packet.readUShort();
+        for(int j = 0; j < base.count; j++)
+            base.labels[j] = new int[packet.readUShort()];
+        for(int j = 0; j < base.count; j++)
+            for(int l = 0; l < base.labels[j].length; l++)
+                base.labels[j][l] = packet.readUShort();
+        return base;
+    }
 
     public int transforms_count() {
         return this.count;

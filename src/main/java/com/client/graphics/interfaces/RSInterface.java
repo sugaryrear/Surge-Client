@@ -412,7 +412,20 @@ public class RSInterface {
 					rsInterface.scrollMax = 300;
 				}
 			}
+			if(rsInterface.id == 19245){
+System.out.println("type: "+rsInterface.type+" and abyte: "+rsInterface.aByte254+" and "+rsInterface.aBoolean227);
+				//rsInterface.
+		//RSInterface containerChild = rsInterface.getChild(0).contentType;
+
+			}
+			if(rsInterface.id == 19247){
+				System.out.println("type 19247: "+rsInterface.type+" and abyte: "+rsInterface.aByte254+" and "+rsInterface.aBoolean227);
+				//rsInterface.
+				//RSInterface containerChild = rsInterface.getChild(0).contentType;
+
+			}
 		}
+	//	System.out.println("interface: "+interfaceCache[4885].type);
 		aClass44 = streamLoader;
 		defaultTextDrawingAreas = textDrawingAreas;
 		Interfaces.loadInterfaces();

@@ -165,7 +165,7 @@ public class Slider {
 				return;
 			}
 
-			for (int childId : widget.children) {//so only children? yeah
+			for (int childId : widget.children) {//
 				if(RSInterface.interfaceCache == null)
 					return;
 				RSInterface child = RSInterface.interfaceCache[childId];
@@ -184,20 +184,7 @@ public class Slider {
 			}
 			Client.instance.tabAreaAltered = true;
 		}
-//for all other sliders!
-//		int interfaceId = Client.instance.openInterfaceID;
-//		if (interfaceId == 78000) {
-//			RSInterface widget = RSInterface.interfaceCache[interfaceId];
-//			for (int childId : widget.children) {
-////				if (RSInterface.interfaceCache[SettingsTabWidget.ZOOMTOGGLE].active) {
-////					return;
-////				}
-//				RSInterface child = RSInterface.interfaceCache[childId];
-//				if (child == null || child.slider == null)//this prolly causes random ass scroll error when mouse wheel scrolling near the minimap?
-//					continue;
-//				child.slider.handleClick(mX, mY, 4, 4, child.contentType);
-//			}
-//		}
+
 	}
 
 	public void setValue(double value) {

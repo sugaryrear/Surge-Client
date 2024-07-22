@@ -18,17 +18,26 @@ import com.client.sign.Signlink;
 import com.google.common.base.Preconditions;
 import lombok.extern.java.Log;
 
+import java.io.*;
+import java.net.*;
+import java.nio.file.*;
+import java.util.Objects;
+import java.util.Scanner;
+import java.util.zip.*;
+import java.io.*;
+import java.net.*;
+import java.nio.file.*;
+import java.util.*;
+import java.util.zip.*;
+
 public class CacheDownloader {
 
 	private static final java.util.logging.Logger log = java.util.logging.Logger.getLogger(CacheDownloader.class.getName());
-
+	private static final int BUFFER = 1024;
 	public static int cacheVersionRemote;
 	public static int cacheVersionLocal;
 
 	private Client client;
-
-	private static final int BUFFER = 1024;
-
 	private Path fileLocation;
 
 	public CacheDownloader(Client client) {
@@ -38,31 +47,21 @@ public class CacheDownloader {
 	}
 
 	private int getLocalVersion() {
-		try(BufferedReader fr = new BufferedReader(new FileReader(Signlink.getCacheDirectory() + File.separator + "version.dat"))){
+		try (BufferedReader fr = new BufferedReader(new FileReader(Signlink.getCacheDirectory() + File.separator + "version.dat"))) {
 			return Integer.parseInt(fr.readLine());
 		} catch (Exception e) {
 			return -1;
 		}
 	}
-//
-//	private int getRemoteVersion() {
-//		try {
-//			URL versionUrl = new URL(Configuration.VERSION_URL);
-//			try(Scanner scanner = new Scanner(versionUrl.openStream())) {
-//				return scanner.nextInt();
-//			}
-//		} catch (Exception e) {
-//			return 0;
-//		}
-//	}
 
 	public void writeVersion(int version) {
 		File versionFile = new File(Signlink.getCacheDirectory() + File.separator + "version.dat");
-		if(versionFile.exists())
+		if (versionFile.exists()) {
 			versionFile.delete();
-		try(BufferedWriter br = new BufferedWriter(new FileWriter(versionFile))) {
+		}
+		try (BufferedWriter br = new BufferedWriter(new FileWriter(versionFile))) {
 			br.write(version + "");
-		} catch(Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
@@ -84,7 +83,7 @@ public class CacheDownloader {
 
 		try {
 			File location = new File(Signlink.getCacheDirectory());
-			File version = new File(Signlink.getCacheDirectory() + "/version.dat");
+			File version = new File(Signlink.getCacheDirectory() + File.separator + "version.dat");
 			cacheVersionRemote = Configuration.CACHE_VERSION;
 			if (!location.exists() || !version.exists()) {
 				log.info("Cache does not exist, downloading.");
@@ -100,15 +99,8 @@ public class CacheDownloader {
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			//ClientWindow.popupMessage("Could not download the cache file.",
-			//"The website might be down or experiencing interruptions.",
-			//Signlink.getCacheDirectory());
 		} catch (Exception e) {
 			e.printStackTrace();
-			//ClientWindow.popupMessage("An error occurred while installing the cache.",
-			//"You may experience crashes or gameplay interruptions.",
-			//"Try deleting the cache and restarting the client.",
-			//Signlink.getCacheDirectory());
 		}
 		return null;
 	}
@@ -120,20 +112,19 @@ public class CacheDownloader {
 		deleteZip();
 	}
 
-	private void downloadFile(String adress, String localFileName) throws IOException {
+	private void downloadFile(String address, String localFileName) throws IOException {
 		OutputStream out = null;
 		URLConnection conn;
 		InputStream in = null;
 
 		try {
-			URL url = new URL(adress);
-			out = new BufferedOutputStream(new FileOutputStream(Signlink.getCacheDirectory() + "/" + localFileName));
+			URL url = new URL(address);
+			out = new BufferedOutputStream(new FileOutputStream(Signlink.getCacheDirectory() + File.separator + localFileName));
 
 			conn = url.openConnection();
 			in = conn.getInputStream();
 
 			byte[] data = new byte[BUFFER];
-
 			int numRead;
 			long numWritten = 0;
 			int fileSize = conn.getContentLength();
@@ -148,7 +139,7 @@ public class CacheDownloader {
 				int downloadSpeed = (int) ((numWritten / 1024) / (1 + (elapsedTime / 1000)));
 
 				float speedInBytes = 1000f * numWritten / elapsedTime;
-				int timeRemaining =  (int) ((fileSize - numWritten) / speedInBytes);
+				int timeRemaining = (int) ((fileSize - numWritten) / speedInBytes);
 
 				client.drawLoadingText(percentage, Configuration.CLIENT_TITLE + " - Downloading Cache " + percentage + "%");
 			}
@@ -170,9 +161,13 @@ public class CacheDownloader {
 		int lastSlashIndex = Configuration.CACHE_LINK.lastIndexOf('/');
 		if (lastSlashIndex >= 0 && lastSlashIndex < Configuration.CACHE_LINK.length() - 1) {
 			String u = Configuration.CACHE_LINK.substring(lastSlashIndex + 1);
-			return u.replace("?dl=1", "");
+			int queryIndex = u.indexOf('?');
+			if (queryIndex != -1) {
+				u = u.substring(0, queryIndex);
+			}
+			return u;
 		} else {
-			System.err.println("error retrieving archived name.");
+			System.err.println("Error retrieving archived name.");
 		}
 		return "";
 	}
@@ -198,7 +193,7 @@ public class CacheDownloader {
 				}
 				File file = new File(newFile.getParent());
 				if (!file.exists()) {
-					Preconditions.checkState(file.mkdirs(), "Cannot create file.");
+					file.mkdirs();
 				}
 				unzip(zin, Signlink.getCacheDirectory() + e.getName());
 			}
@@ -211,7 +206,7 @@ public class CacheDownloader {
 		final Enumeration<? extends ZipEntry> entries = zipFile.entries();
 		int numRegularFiles = 0;
 		while (entries.hasMoreElements()) {
-			if (! entries.nextElement().isDirectory()) {
+			if (!entries.nextElement().isDirectory()) {
 				++numRegularFiles;
 			}
 		}
@@ -221,10 +216,10 @@ public class CacheDownloader {
 	private void unzip(ZipInputStream zin, String s) throws IOException {
 		try (FileOutputStream out = new FileOutputStream(s)) {
 			byte[] b = new byte[BUFFER];
-			int len = 0;
-			while ((len = zin.read(b)) != -1)
+			int len;
+			while ((len = zin.read(b)) != -1) {
 				out.write(b, 0, len);
+			}
 		}
 	}
-
 }

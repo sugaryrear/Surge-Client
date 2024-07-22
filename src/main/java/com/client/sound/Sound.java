@@ -18,10 +18,6 @@ import com.client.sign.Signlink;
 
 public class Sound {
 
-    // TODO
-    // https://pastebin.com/vFkVrAGZ
-    // store sound files as they come in (~100 max)
-
     private static final Sound SINGLETON = new Sound();
     private static final ExecutorService executor = Executors.newFixedThreadPool(14);
 
@@ -37,22 +33,23 @@ public class Sound {
     }
 
     public void playSound(int id, SoundType soundType, double distanceFromOrigin) {
-//        if (!executor.isShutdown() && getSound(id).exists()) {
-//            executor.submit(() -> {
-//                try {
-//                    sound(getSound(id), soundType, distanceFromOrigin);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    executor.shutdown();
-//                }
-//            });
-//        }
+        //System.out.println("id: "+id);
+        if (!executor.isShutdown() && getSound(id).exists()) {
+            executor.submit(() -> {
+                try {
+                    sound(getSound(id), soundType, distanceFromOrigin);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    executor.shutdown();
+                }
+            });
+        }
     }
 
     public float calculateVolume(SoundType soundType, double distanceFromOrigin) {
         double distanceVolume = (12d - distanceFromOrigin) / 12d; // 0.0-1.0
         double soundVolume = (soundType.getVolume() / 10d);
-        //System.out.println("volume calculate: " + distanceVolume + " " + soundVolume);
+
         return (float) (soundVolume * distanceVolume);     // below 0.5 it gets fuzzy
     }
 
@@ -67,6 +64,7 @@ public class Sound {
             if (line.isControlSupported(FloatControl.Type.MASTER_GAIN))
             {
                 int volume = (int) (30d * calculateVolume(soundType, distanceFromOrigin));
+                System.out.println("vol: "+volume);
                 FloatControl gainControl = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);
                 BooleanControl muteControl = (BooleanControl) line.getControl(BooleanControl.Type.MUTE);
                 System.out.println("Volume at playtime: " + volume + ", factor: "  + calculateVolume(soundType, distanceFromOrigin));

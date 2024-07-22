@@ -25,7 +25,7 @@ public final class AnimFrame {
 				}
 
 				//might need to put frame_id here and forget about using the l1
-				AnimFrame frame = out[l1] = new AnimFrame();
+				AnimFrame frame = out[l1] = new AnimFrame();//Frame class36 = animationlist[file][i2] = new Frame();
 				frame.frameset_id = group_id;
 				frame.base = class18;
 				int transform_count = stream.get_unsignedbyte();
@@ -99,7 +99,79 @@ public final class AnimFrame {
 			System.err.println("Error unpacking anim frames: " + group_id);
 		}
 	}
+	public static void load_chatheads(int file, Buffer stream, int transform_count, AnimBase class18, AnimFrame[] out){
+		try {
+			int ai[] = new int[500];
+			int ai1[] = new int[500];
+			int ai2[] = new int[500];
+			int ai3[] = new int[500];
+			for(int l1 = 0; l1 < transform_count; l1++)
+			{
+				int i2 = stream.readUShort();
+				AnimFrame class36 = AnimFrameSet.frameset[file].frames[i2] = new AnimFrame();
+				class36.base = class18;
+				int j2 = stream.get_unsignedbyte();
+				int l2 = 0;
+				int k2 = -1;
+				for(int i3 = 0; i3 < j2; i3++)
+				{
+					int j3 = stream.get_unsignedbyte();
 
+					if(j3 > 0)
+					{
+						if(class18.transform_types[i3] != 0)
+						{
+							for(int l3 = i3 - 1; l3 > k2; l3--)
+							{
+								if(class18.transform_types[l3] != 0)
+									continue;
+								ai[l2] = l3;
+								ai1[l2] = 0;
+								ai2[l2] = 0;
+								ai3[l2] = 0;
+								l2++;
+								break;
+							}
+
+						}
+						ai[l2] = i3;
+						short c = 0;
+						if(class18.transform_types[i3] == 3)
+							c = (short)128;
+
+						if((j3 & 1) != 0)
+							ai1[l2] = (short)stream.get_short();
+						else
+							ai1[l2] = c;
+						if((j3 & 2) != 0)
+							ai2[l2] = stream.get_short();
+						else
+							ai2[l2] = c;
+						if((j3 & 4) != 0)
+							ai3[l2] = stream.get_short();
+						else
+							ai3[l2] = c;
+						k2 = i3;
+						l2++;
+					}
+				}
+
+				class36.transformationCount = l2;
+				class36.transformationIndices = new int[l2];
+				class36.transformX = new int[l2];
+				class36.transformY = new int[l2];
+				class36.transformZ = new int[l2];
+				for(int k3 = 0; k3 < l2; k3++)
+				{
+					class36.transformationIndices[k3] = ai[k3];
+					class36.transformX[k3] = ai1[k3];
+					class36.transformY[k3] = ai2[k3];
+					class36.transformZ[k3] = ai3[k3];
+				}
+
+			}
+		}catch(Exception exception) { }
+	}
 	public static int get_fileid(int frame_id) {
 		try {
 			int file = frame_id >>> 16;

@@ -44,6 +44,9 @@ dependencies {
         exclude(group = "com.google.j2objc", module = "j2objc-annotations")
         exclude(group = "org.codehaus.mojo", module = "animal-sniffer-annotations")
     }
+
+    implementation("com.thoughtworks.xstream:xstream:1.4.20") // Check for the latest version
+
     implementation(group = "com.google.inject", name = "guice", version = "5.0.1")
     implementation(group = "com.jakewharton.rxrelay3", name = "rxrelay", version = "3.0.1")
     implementation(group = "com.squareup.okhttp3", name = "okhttp", version = "4.9.1")

@@ -9,11 +9,11 @@ public enum SoundType {
     public double getVolume() {
         switch (this) {
             case MUSIC:
-                return Preferences.getPreferences().musicVolume;
+                return 0;
             case SOUND:
                 return Preferences.getPreferences().soundVolume;
             case AREA_SOUND:
-                return Preferences.getPreferences().areaSoundVolume;
+                return 0;
             default:
                 throw new IllegalStateException("Didn't handle " + toString());
         }

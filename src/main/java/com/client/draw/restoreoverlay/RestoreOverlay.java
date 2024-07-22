@@ -101,6 +101,7 @@ if(boostedskills.isEmpty()){
 
         Rasterizer2D.draw_filled_rect(x, y, 129, drawingHeight +(yposition), 0x000000, 50);
         Rasterizer2D.drawRectangle((x)-1, y-1, 129, drawingHeight+(yposition), 0x696969);
+
     }
 
 }

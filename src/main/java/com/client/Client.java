@@ -929,9 +929,30 @@ public class Client extends GameEngine implements RSClient {
 											for (int right = 0; right < modIcons.length; right++) {
 											//	System.out.println("right: "+right);
 												if (right == (crown - 1) && modIcons[right] != null) {
-										//		System.out.println("r: "+right+" crown: "+crown);
+												//System.out.println("r: "+right+" crown: "+crown);
 													modIcons[right].drawAdvancedSprite(xPos - 1,
 															yPos + yOffset - modIcons[right].myHeight);
+
+//this will actually keep going indefinitely lol even at full hp
+//                                                    String cHP = RSInterface.interfaceCache[4016].message;
+//                                                    String mHP = RSInterface.interfaceCache[4017].message;
+//                                                    int currentHP = Integer.parseInt(cHP);
+//                                                    int maxHP = Integer.parseInt(mHP);
+//                                                    if (regenHealthStart > 0) {
+//                                                        float difference = (int) (System.currentTimeMillis() - regenHealthStart);
+//                                                        float angle = (difference / (rapidHeal ? REGEN_HEALTH_TIME_RAPID_HEAL : REGEN_HEALTH_TIME)) * 360.0f;
+//                                                        //System.out.println("percent: "+percent+" angle: "+angle+" level:"+level);
+//                                                        //if (setting.draw_orb_arc) {
+//                                                        Rasterizer2D.draw_arc(xPos - 1, yPos + yOffset, 28, 28, 2, 90, -(int) angle, 0xff0000, 210, 0,
+//                                                                false);
+//                                                        //	}
+//                                                        if (angle > 358.0f && currentHP != lastHp) {
+//                                                            regenHealthStart = System.currentTimeMillis();
+//                                                            restorehealth();
+//                                                            lastHp = currentHP;
+//                                                        }
+//
+//                                                    }
 													xPos += modIcons[right].myWidth;
 													xPos += 2;
 													break;
@@ -4233,6 +4254,9 @@ if(update_tick % 40 < 20){
 		if (titleButton == null) {
 			titleButton = new IndexedImage(titleStreamLoader, "titlebutton", 0);
 		}
+		if (logologin == null) {
+			logologin = new IndexedImage(titleStreamLoader, "logo", 0);
+		}
 		//titleButtonIndexedImage = new IndexedImage(titleStreamLoader, "titlebutton", 0);
 		//titleBoxIndexedImage = new IndexedImage(titleStreamLoader, "titlebox", 0);
 //		if (loginHover == null) {
@@ -4633,16 +4657,23 @@ if(update_tick % 40 < 20){
 					if (backDialogID != -1)
 						inputTaken = true;
 				}
+				//all your npc chat heads being frozen  / not appearing issues are handled here.
 				if (onDemandData.dataType == 1 && onDemandData.buffer != null) {
 					int magic = (onDemandData.buffer[1] & 0xff) + ((onDemandData.buffer[0] & 0xff) << 8);
-					System.out.println("magic: "+magic);
+				//	System.out.println("magic: "+magic+" and id: "+onDemandData.ID);
 					if(magic == 420) {//load skeletal
 						AnimKeyFrameSet.load(onDemandData.ID, onDemandData.buffer);
 					} else if(magic == 710) {
 						AnimFrameSet.load_osrs(onDemandData.ID, onDemandData.buffer);
-					} /*else if (onDemandData.ID == 3366) {
+					} else if (onDemandData.ID == 3366) {
 						AnimFrameSet.load_641(onDemandData.ID, onDemandData.buffer);
-					}*/
+					}
+
+					//without this the animation file isnt even being loaded
+					else if (magic == 6912) {
+						AnimFrameSet.load_chatheads(onDemandData.ID, onDemandData.buffer);
+
+					}
 					//641 ANIMS GO HERE
 				}
 				if (onDemandData.dataType == 2 && onDemandData.ID == nextSong && onDemandData.buffer != null)
@@ -8081,7 +8112,7 @@ public boolean statadjustmentshidden;
 							}
 						}
 					} else if (rsi.updatesEveryInput && rsi.message.length() > 0 && j != 10 && j != 13) {
-						SpawnContainer.get().update(rsi.message);
+						SpawnContainer.get().update(rsi.message);//really good way of updating something based on words
 						if (rsi.inputFieldListener != null)
 							rsi.inputFieldListener.accept(rsi.message);
 						inputString = "";
@@ -9126,39 +9157,57 @@ newSmallFont.drawBasicString(itemName, mouseX + 1 , mouseY + 16, color, 1);
 //		stream.writeWordBigEndian(inputString.length() - 1);
 //		stream.writeString(inputString.substring(2));
 
-		inputString = "";
+	//	inputString = "";
 
-		String stabAtk = "";
-		String slashAtk = "";
-		String crushAtk = "";
-		String magicAtk ="";
-		String rangedAtk ="";
+//		String stabAtk = "";
+//		String slashAtk = "";
+//		String crushAtk = "";
+//		String magicAtk ="";
+//		String rangedAtk ="";
+//
+//		String stabDef = "";
+//		String slashDef ="";
+//		String crushDef ="";
+//		String magicDef = "";
+//		String rangedDef = "";
+//
+//		String prayerBonus="";
+//		String strengthBonus="";
 
-		String stabDef = "";
-		String slashDef ="";
-		String crushDef ="";
-		String magicDef = "";
-		String rangedDef = "";
 
-		String prayerBonus="";
-		String strengthBonus="";
+		//itemstats(itemId);
+//		stabAtk = stabatkbonus;
+//		slashAtk = slashatkbonus;
+//		crushAtk = crushatkbonus;
+//		magicAtk = magicatkbonus;
+//		rangedAtk = rangedatkbonus;
+//
+//		stabDef = stabdefbonus;
+//		slashDef = slashdefbonus;
+//		crushDef = crushdefbonus;
+//		magicDef = magicdefbonus;
+//		rangedDef = rangeddefbonus;
+//
+//		prayerBonus= prayerbonusbonus;
+//		strengthBonus= strengthbonusbonus;
 
+if(ItemBonusDefinition.getItemBonuses(hintId) == null)
+	return;
+		short stabAtk = ItemBonusDefinition.getItemBonuses(hintId)[0];
+		int slashAtk = ItemBonusDefinition.getItemBonuses(hintId)[1];
+		int crushAtk = ItemBonusDefinition.getItemBonuses(hintId)[2];
+		int magicAtk = ItemBonusDefinition.getItemBonuses(hintId)[3];
+		int rangedAtk = ItemBonusDefinition.getItemBonuses(hintId)[4];
 
-		itemstats(itemId);
-		stabAtk = stabatkbonus;
-		slashAtk = slashatkbonus;
-		crushAtk = crushatkbonus;
-		magicAtk = magicatkbonus;
-		rangedAtk = rangedatkbonus;
+		int stabDef = ItemBonusDefinition.getItemBonuses(hintId)[5];
+		int slashDef = ItemBonusDefinition.getItemBonuses(hintId)[6];
+		int crushDef = ItemBonusDefinition.getItemBonuses(hintId)[7];
+		int magicDef = ItemBonusDefinition.getItemBonuses(hintId)[8];
+		int rangedDef = ItemBonusDefinition.getItemBonuses(hintId)[9];
 
-		stabDef = stabdefbonus;
-		slashDef = slashdefbonus;
-		crushDef = crushdefbonus;
-		magicDef = magicdefbonus;
-		rangedDef = rangeddefbonus;
-
-		prayerBonus= prayerbonusbonus;
-		strengthBonus= strengthbonusbonus;
+		int prayerBonus = ItemBonusDefinition.getItemBonuses(hintId)[12];
+		int strengthBonus = ItemBonusDefinition.getItemBonuses(hintId)[10];
+		int rangedstrBonus = ItemBonusDefinition.getItemBonuses(hintId)[11];
 //System.out.println(strengthBonus+" "+Integer.parseInt(strengthBonus));
 		Rasterizer2D.drawBoxOutline(mouseX ,  mouseY + 20, 120, 120, 0x696969);
 		Rasterizer2D.drawTransparentBox(mouseX + 1,  mouseY + 21,119, 119, 0x000000,180);//90 instead of 180
@@ -9170,49 +9219,51 @@ newSmallFont.drawBasicString(itemName, mouseX + 1 , mouseY + 16, color, 1);
 
 		Client.instance.newSmallFont.drawBasicString("@whi@Stab", mouseX + 2, mouseY + 43, color, 1);
 
-		Client.instance.newSmallFont.drawBasicString((stabAtk !=null && Integer.parseInt(stabAtk) < 0? "@red@"+stabAtk+"" : "@gre@"+stabAtk+""), mouseX + 62, mouseY + 43, color, 1);
+		Client.instance.newSmallFont.drawBasicString((stabAtk < 0? "@red@"+stabAtk+"" : "@gre@"+stabAtk+""), mouseX + 62, mouseY + 43, color, 1);
 		//Client.instance.newSmallFont.drawBasicString(Integer.toString(stabDef), mouseX + 112, mouseY + 43, color, 1);
 
-		Client.instance.newSmallFont.drawBasicString((stabDef !=null && Integer.parseInt(stabDef) < 0?   "@red@ "+stabDef+" " : "@gre@"+stabDef+""), mouseX + 102, mouseY + 43, color, 1);
+		Client.instance.newSmallFont.drawBasicString((stabDef < 0?   "@red@ "+stabDef+" " : "@gre@"+stabDef+""), mouseX + 102, mouseY + 43, color, 1);
 
 		Client.instance.newSmallFont.drawBasicString("@whi@Slash", mouseX + 2, mouseY + 56, 0xFF00FF, 1);
 
-		Client.instance.newSmallFont.drawBasicString((slashAtk!=null &&  Integer.parseInt(slashAtk) < 0?  "@red@"+slashAtk+"" : "@gre@"+slashAtk+""), mouseX + 62, mouseY + 56, color, 1);
+		Client.instance.newSmallFont.drawBasicString((slashAtk < 0?  "@red@"+slashAtk+"" : "@gre@"+slashAtk+""), mouseX + 62, mouseY + 56, color, 1);
 		// Client.instance.newSmallFont.drawBasicString(Integer.toString(slashAtk), mouseX + 62, mouseY + 56, color, 1);
 		// Client.instance.newSmallFont.drawBasicString(Integer.toString(slashDef), mouseX + 112, mouseY + 56, color, 1);
-		Client.instance.newSmallFont.drawBasicString((slashDef!=null &&  Integer.parseInt(slashDef) < 0 ?  "@red@"+slashDef+"" : "@gre@"+slashDef+""), mouseX + 102, mouseY + 56, color, 1);
+		Client.instance.newSmallFont.drawBasicString((slashDef < 0 ?  "@red@"+slashDef+"" : "@gre@"+slashDef+""), mouseX + 102, mouseY + 56, color, 1);
 
 
 		Client.instance.newSmallFont.drawBasicString("@whi@Crush", mouseX + 2, mouseY + 69, color, 1);
 		// Client.instance.newSmallFont.drawBasicString(Integer.toString(crushAtk), mouseX + 62, mouseY + 69, color, 1);
 		//Client.instance.newSmallFont.drawBasicString(Integer.toString(crushDef), mouseX + 112, mouseY + 69, color, 1);
-		Client.instance.newSmallFont.drawBasicString((crushAtk!=null   && Integer.parseInt(crushAtk) < 0 ? "@red@"+crushAtk+"" : "@gre@"+crushAtk+""), mouseX + 62, mouseY + 69, color, 1);
-		Client.instance.newSmallFont.drawBasicString((crushDef!=null &&  Integer.parseInt(crushDef) < 0   ? "@red@"+crushDef+"" : "@gre@"+crushDef+""), mouseX + 102, mouseY + 69, color, 1);
+		Client.instance.newSmallFont.drawBasicString((crushAtk < 0 ? "@red@"+crushAtk+"" : "@gre@"+crushAtk+""), mouseX + 62, mouseY + 69, color, 1);
+		Client.instance.newSmallFont.drawBasicString((crushDef < 0   ? "@red@"+crushDef+"" : "@gre@"+crushDef+""), mouseX + 102, mouseY + 69, color, 1);
 
 
 		Client.instance.newSmallFont.drawBasicString("@whi@Magic", mouseX + 2, mouseY + 80, color, 1);
 		//Client.instance.newSmallFont.drawBasicString(Integer.toString(magicAtk), mouseX + 62, mouseY + 80, color, 1);
 		// Client.instance.newSmallFont.drawBasicString(Integer.toString(magicDef), mouseX + 112, mouseY + 80, color, 1);
-		Client.instance.newSmallFont.drawBasicString((magicAtk!=null    && Integer.parseInt(magicAtk) < 0 ? "@red@"+magicAtk+"" : "@gre@"+magicAtk+""), mouseX + 62, mouseY + 80, color, 1);
-		Client.instance.newSmallFont.drawBasicString((magicDef!=null   && Integer.parseInt(magicDef) < 0 ?"@red@"+magicDef+"" : "@gre@"+magicDef+""), mouseX + 102, mouseY + 80, color, 1);
+		Client.instance.newSmallFont.drawBasicString((magicAtk < 0 ? "@red@"+magicAtk+"" : "@gre@"+magicAtk+""), mouseX + 62, mouseY + 80, color, 1);
+		Client.instance.newSmallFont.drawBasicString((magicDef < 0 ?"@red@"+magicDef+"" : "@gre@"+magicDef+""), mouseX + 102, mouseY + 80, color, 1);
 
 		Client.instance.newSmallFont.drawBasicString("@whi@Ranged", mouseX + 2, mouseY + 95, color, 1);
 		//Client.instance.newSmallFont.drawBasicString(Integer.toString(rangedAtk), mouseX + 62, mouseY + 95, color, 1);
 		// Client.instance.newSmallFont.drawBasicString(Integer.toString(rangedDef), mouseX + 112, mouseY + 95, color, 1);
 
-		Client.instance.newSmallFont.drawBasicString((rangedAtk!=null   && Integer.parseInt(rangedAtk) < 0  ? "@red@"+rangedAtk+"" : "@gre@"+rangedAtk+""), mouseX + 62, mouseY + 95, color, 1);
-		Client.instance.newSmallFont.drawBasicString((rangedDef!=null   && Integer.parseInt(rangedDef) < 0 ? "@red@"+rangedDef+"" : "@gre@"+rangedDef+""), mouseX + 102, mouseY + 95, color, 1);
+		Client.instance.newSmallFont.drawBasicString((rangedAtk < 0  ? "@red@"+rangedAtk+"" : "@gre@"+rangedAtk+""), mouseX + 62, mouseY + 95, color, 1);
+		Client.instance.newSmallFont.drawBasicString((rangedDef < 0 ? "@red@"+rangedDef+"" : "@gre@"+rangedDef+""), mouseX + 102, mouseY + 95, color, 1);
 
 
 		Client.instance.newSmallFont.drawBasicString("@whi@Strength", mouseX + 2, mouseY + 108, color, 1);
 		Client.instance.newSmallFont.drawBasicString("@whi@Prayer", mouseX + 2, mouseY + 121, color, 1);
+		Client.instance.newSmallFont.drawBasicString("@whi@Ranged Str", mouseX + 2, mouseY + 134, color, 1);
 
 		//Client.instance.newSmallFont.drawBasicString(Integer.toString(strengthBonus), mouseX + 112, mouseY + 108, color, 1);
 		//Client.instance.newSmallFont.drawBasicString(Integer.toString(prayerBonus), mouseX + 112, mouseY + 121, color, 1);
-		if(strengthBonus.equals(""))
-			strengthBonus = "0";
-		Client.instance.newSmallFont.drawBasicString((strengthBonus!=null   && Integer.parseInt(strengthBonus) < 0 ? "@red@"+strengthBonus+"" : "@gre@"+strengthBonus+""), mouseX + 62, mouseY + 108, color, 1);
-		Client.instance.newSmallFont.drawBasicString((prayerBonus!=null   && Integer.parseInt(prayerBonus) < 0 ? "@red@"+prayerBonus+"" : "@gre@"+prayerBonus+""), mouseX + 62, mouseY + 121, color, 1);
+//		if(strengthBonus.equals(""))
+//			strengthBonus = "0";
+		Client.instance.newSmallFont.drawBasicString((strengthBonus < 0 ? "@red@"+strengthBonus+"" : "@gre@"+strengthBonus+""), mouseX + 62, mouseY + 108, color, 1);
+		Client.instance.newSmallFont.drawBasicString((prayerBonus < 0 ? "@red@"+prayerBonus+"" : "@gre@"+prayerBonus+""), mouseX + 62, mouseY + 121, color, 1);
+		Client.instance.newSmallFont.drawBasicString((rangedstrBonus < 0 ? "@red@"+rangedstrBonus+"" : "@gre@"+rangedstrBonus+""), mouseX + 62, mouseY + 134, color, 1);
 
 		Client.instance.newSmallFont.drawBasicString("@whi@Stab", mouseX + 2, mouseY + 43, color, 1);
 		Client.instance.newSmallFont.drawBasicString("@whi@Slash", mouseX + 2, mouseY + 56, color, 1);
@@ -9221,7 +9272,10 @@ newSmallFont.drawBasicString(itemName, mouseX + 1 , mouseY + 16, color, 1);
 		Client.instance.newSmallFont.drawBasicString("@whi@Range", mouseX + 2, mouseY + 95, color, 1);
 		Client.instance.newSmallFont.drawBasicString("@whi@Strength", mouseX + 2, mouseY + 108, color, 1);
 		Client.instance.newSmallFont.drawBasicString("@whi@Prayer", mouseX + 2, mouseY + 121, color, 1);
-		sendstatsrequest=  true;
+		Client.instance.newSmallFont.drawBasicString("@whi@Prayer", mouseX + 2, mouseY + 121, color, 1);
+
+
+	//	sendstatsrequest=  true;
 	}
 
 	private void buildChatAreaMenu(int j) {
@@ -11980,7 +12034,7 @@ public Sprite login1850 = new Sprite("Login/1850");
 			newRegularFont = new RSFont(false, "p12_full" + fontFilter(), titleStreamLoader);
 			newBoldFont = new RSFont(false, "b12_full" + fontFilter(), titleStreamLoader);
 			newFancyFont = new RSFont(true, "q8_full" + fontFilter(), titleStreamLoader);
-
+			ItemBonusDefinition.loadItemBonusDefinitions();
 			/**
 			 * New fonts
 			 */
@@ -12015,8 +12069,8 @@ public Sprite login1850 = new Sprite("Login/1850");
 //
 			resourceProvider = new OnDemandFetcher();
 			resourceProvider.start(streamLoader_6, this);
-//	repackCacheIndex(1);
-	repackCacheIndex(4);
+	//repackCacheIndex(1);
+	//repackCacheIndex(4);
 //repackCacheIndex(2);
 			if (Configuration.packIndexData) {
 				repackCacheAll();
@@ -12500,16 +12554,16 @@ public Sprite login1850 = new Sprite("Login/1850");
 		stream.writeString(text.substring(2));
 	}
 	private void itemstats(int id) {
-		if(sendstatsrequest){
-			return;
-		}
+//		if(sendstatsrequest){
+//			return;
+//		}
 		String text = "::getitemstats-" + id;
 		stream.createFrame(103);
 		stream.writeUnsignedByte(text.length() - 1);
 		stream.writeString(text.substring(2));
 
 	}
-	public boolean sendstatsrequest;
+	//public boolean sendstatsrequest;
 	private void viewnpcdrop(long id) {
 
 		String text = "::npcdrop-" + id;
@@ -13737,17 +13791,21 @@ public Sprite login1850 = new Sprite("Login/1850");
 								if (flag && class9_1.anInt216 != 0)
 									colour = class9_1.anInt216;
 							}
-							if (class9_1.aByte254 == 0) {
+							if (class9_1.aByte254 == 0) {//ok 19244 is the outline
 								if (class9_1.aBoolean227)
 									Rasterizer2D.drawPixels(class9_1.height, _y, _x, colour, class9_1.width);
 								else
 									Rasterizer2D.fillPixels(_x, class9_1.width, class9_1.height, colour, _y);
 							} else if (class9_1.aBoolean227)
-								Rasterizer2D.method335(colour, _y, class9_1.width, class9_1.height,
-									256 - (class9_1.aByte254 & 0xff), _x);
+//								Rasterizer2D.method335(colour, _y, class9_1.width, class9_1.height,
+//									256 - (class9_1.aByte254 & 0xff), _x);
+//							Rasterizer2D.fillPixels(_x, class9_1.width, class9_1.height, colour, _y);
+								Rasterizer2D.drawTransparentBox(_x, _y, class9_1.width, class9_1.height, colour,
+										256 - (class9_1.opacity & 0xff));
 							else
-								Rasterizer2D.method338(_y, class9_1.height, 256 - (class9_1.aByte254 & 0xff), colour,
-									class9_1.width, _x);
+								Rasterizer2D.fillPixels(_x, class9_1.width, class9_1.height, colour, _y);
+//								Rasterizer2D.method338(_y, class9_1.height, 256 - (class9_1.aByte254 & 0xff), colour,
+//									class9_1.width, _x);
 						} else if (class9_1.type == 4 || class9_1.type == RSInterface.TYPE_TEXT_DRAW_FROM_LEFT) {
 							TextDrawingArea textDrawingArea = class9_1.textDrawingAreas;
 							String s = class9_1.message;
@@ -13934,11 +13992,16 @@ public Sprite login1850 = new Sprite("Login/1850");
 								seq_id = class9_1.active_seq_id;
 							else
 								seq_id = class9_1.seq_id;
+
+						//	System.out.println("seq: "+seq_id+" active? :"+active);
 							Model model;
 							if (seq_id == -1) {
 								model = class9_1.get_if_model(null, -1, active);
 							} else {
 								AnimationDefinition animation = AnimationDefinition.anims[seq_id];
+								if (class9_1.iftype_frameindex >= animation.frame_durations.length || class9_1.iftype_frameindex >= animation.frames.length) {
+									class9_1.iftype_frameindex = 0; // Fixes array index out of bounds on npc dialogues
+								}
 								model = class9_1.get_if_model(animation, class9_1.iftype_frameindex, active);
 							}
 							if (model != null) {
@@ -15505,6 +15568,7 @@ if(class9_1.id == 14934){//right side skill icons lets move them left by some pi
 //System.out.println("aaaaaa: "+anim_id);
 				if (anim_id != -1) {
 					AnimationDefinition seqtype = AnimationDefinition.anims[anim_id];
+					System.out.println("we using keyframes? "+seqtype.using_keyframes());
 					if (seqtype.using_keyframes()) {
 						System.out.println("keyframes "+anim_id);
 						class9_1.iftype_frameindex += tick;
@@ -16852,6 +16916,7 @@ public boolean infrunenergy;
 
 	private Sprite captcha;
 	private IndexedImage titleButtonIndexedImage;
+	private IndexedImage logologin;
 	private AccountManager accountManager;
 
 	public void drawLoginScreen(boolean flag) {
@@ -16887,7 +16952,7 @@ public boolean infrunenergy;
 //		int c1 = Character.getNumericValue(c1_orig);
 		titleBoxIndexedImage.draw(202,171);//
 		//int j = centerY - 40;
-
+		logologin.draw(150 ,10);
 		if (loginScreenState == LoginScreenState.ENTRY_SCREEN) {
 		//	int i =  c1 / 2 + 80;
 			//newBoldFont.drawCenteredString("loaded", i, c / 2, 0x75a9a9, 255);
@@ -18072,7 +18137,8 @@ public boolean infrunenergy;
 					return true;
 
 				case 185:
-					int k = inStream.method436();
+				//int k = inStream.method436();
+                    int k = inStream.readShortBigEndianA();
 					RSInterface.interfaceCache[k].model_cat = 3;
 					if (localPlayer.desc == null)
 						RSInterface.interfaceCache[k].modelid = (localPlayer.player_recolour_destination[0] << 25)
@@ -18460,7 +18526,6 @@ public boolean infrunenergy;
 					if (j31 > 0) {
 						PetSystem.petSelected = j31;
 					}
-
 					RSInterface itf = RSInterface.interfaceCache[j111];
 					itf.model_cat = mediaType;
 					itf.modelid = j31;
@@ -18579,7 +18644,7 @@ public boolean infrunenergy;
 					else if (s.startsWith("spellbook##")) {
 						String[] args = s.split("##");
 						int book = Integer.parseInt(args[1]);
-spellbookicon = book;
+	        			spellbookicon = book;
 						incomingPacket = -1;
 						return true;
 					}
@@ -19281,7 +19346,7 @@ prayerbonusbonus= args[11];
 					specialAttack = inStream.readSignedByte();
 					specialEnabled = inStream.readSignedByte();
 					incomingPacket = -1;
-					System.out.println("spec: "+specialEnabled);
+					//System.out.println("spec: "+specialEnabled);
 					return true;
 				case 240:
 					if (tabID == 12)
@@ -19548,9 +19613,9 @@ prayerbonusbonus= args[11];
 					RSInterface class9_4 = RSInterface.interfaceCache[l8];
 					class9_4.seq_id = i15;
 					System.out.println("l8: "+l8+" i15: "+i15);
-//					if (i15 == 591 || i15 == 588) {
-//						class9_4.modelZoom = 900; // anInt269
-//					}
+					if (i15 == 591 || i15 == 588) {
+						class9_4.modelZoom = 900; // anInt269
+					}
 					if (i15 == -1) {
 						class9_4.iftype_frameindex = 0;
 						class9_4.iftype_loops_remaining = 0;

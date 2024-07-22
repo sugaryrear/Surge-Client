@@ -226,7 +226,7 @@ public final class KeyHandler implements KeyListener, FocusListener, RSKeyHandle
         }
         if (i == KeyEvent.VK_CONTROL) {
             Client.controlIsDown = false;
-            Client.instance.sendstatsrequest=  false;
+           // Client.instance.sendstatsrequest=  false;
         }
 
         if (c < '\036')

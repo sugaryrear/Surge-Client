@@ -250,7 +250,7 @@ public final class AnimationDefinition {
 			System.out.println("Dumping animation fields to /temp/animation_dump.txt");
 
 		}
-		dump();
+		//dump();
 	}
 
 	public int get_frame_soundeffect(int frameIndex) {
@@ -271,118 +271,118 @@ public final class AnimationDefinition {
 	//anintarray353 = frames
 	//anIntArray354  = secondary_frames
 	//frameLengths  = frame_durations
-//	private void readValues(Buffer1 stream) {
-//		int i;
-//		while ((i = stream.readUnsignedByte()) != 0) {
-//
-//			if (i == 1) {
-//				framecount = stream.readUShort();//framecount = buffer.readUShort();
-//				frames  = new int[framecount];
-//				secondary_frames = new int[framecount];
-//				frame_durations  = new int[framecount];
-//				for (int j = 0; j < framecount; j++)
-//					frame_durations [j] = stream.readUShort();
-//
-//				for (int j = 0; j < framecount; j++) {
-//					frames [j] = stream.readUShort();
-//					secondary_frames[j] = -1;
-//				}
-//				for (int j = 0; j < framecount; j++) {
-//					frames [j] += stream.readUShort() << 16;
-//					secondary_frames[j] = -1;
-//				}
-//			} else if (i == 2)
-//				loop_delay = stream.readUShort();
-//			else if (i == 3) {
-//				int k = stream.readUnsignedByte();
-//				mergedseqgroups = new int[k + 1];
-//				for (int l = 0; l < k; l++)
-//					mergedseqgroups[l] = stream.readUnsignedByte();
-//				mergedseqgroups[k] = 9999999;
-//			} else if (i == 4)
-//				stretches  = true;
-//			else if (i == 5)
-//				priority = stream.readUnsignedByte();
-//			else if (i == 6)
-//				offhand = stream.readUShort();
-//			else if (i == 7)
-//				mainhand  = stream.readUShort();
-//			else if (i == 8)
-//				replaycount  = stream.readUnsignedByte();
-//			else if (i == 9)
-//				exactmove  = stream.readUnsignedByte();
-//			else if (i == 10)
-//				movetype = stream.readUnsignedByte();
-//			else if (i == 11)
-//				looptype = stream.readUnsignedByte();
-//			else if (i == 12) {
-//				int len = stream.readUnsignedByte();
-//				secondary_frames = new int[len];
-//				for (int i2 = 0; i2 < len; i2++) {
-//					secondary_frames[i2] = stream.readUShort();
-//				}
-//
-//				for (int i2 = 0; i2 < len; i2++) {
-//					secondary_frames[i2] += stream.readUShort() << 16;
-//				}
-//			} else if (i == 13) {
-//				int var3 = stream.readUnsignedByte();
-//				frame_soundeffects = new int[var3];
-//				for (int var4 = 0; var4 < var3; ++var4)
-//				{
-//					frame_soundeffects[var4] = stream.read24Int();
-//					if (0 != frame_soundeffects[var4]) {
-//						int var6 = frame_soundeffects[var4] >> 8;
-//						int var8 = frame_soundeffects[var4] >> 4 & 7;
-//						int var9 = frame_soundeffects[var4] & 15;
-//						frame_soundeffects[var4] = var6;
-//					}
-//				}
-//			} else if (i == 14) {
-//				keyframe_id  = stream.readInt();
-//			} else if (i == 15) {
-//				int count = stream.readUShort();
-//				skeletalsoundEffect = new int[count];
-//				skeletalsoundRange = new int[count];
-//				for (int index = 0; index < count; ++index) {
-//					skeletalsoundEffect[index] = stream.readUShort();
-//					skeletalsoundRange[index] = stream.read24Int();
-//				}
-//			} else if (i == 16) {
-//				skeletalRangeBegin = stream.readUShort();
-//				skeletalRangeEnd = stream.readUShort();
-//			} else if (i == 17) {
-//				int count = stream.readUnsignedByte();
-//				unknown = new int[count];
-//				for (int index = 0; index < count; ++index) {
-//					unknown[index] = stream.readUnsignedByte();
-//				}
-//			} else if (i == 127) {
-//				// Hidden
-//			} else System.out.println("Error unrecognised seq config code: " + i);
-//		}
-//		if (framecount == 0) {
-//			framecount = 1;
-//			frames  = new int[1];
-//			frames [0] = -1;
-//			secondary_frames = new int[1];
-//			secondary_frames[0] = -1;
-//			frame_durations  = new int[1];
-//			frame_durations [0] = -1;
-//		}
-//		if (exactmove  == -1)
-//			if (mergedseqgroups != null)
-//				exactmove  = 2;
-//			else
-//				exactmove  = 0;
-//		if (movetype == -1) {
-//			if (mergedseqgroups != null) {
-//				movetype = 2;
-//				return;
-//			}
-//			movetype = 0;
-//		}
-//	}
+	private void forchatheads(Buffer1 stream) {
+		int i;
+		while ((i = stream.readUnsignedByte()) != 0) {
+
+			if (i == 1) {
+				framecount = stream.readUShort();//framecount = buffer.readUShort();
+				frames  = new int[framecount];
+				secondary_frames = new int[framecount];
+				frame_durations  = new int[framecount];
+				for (int j = 0; j < framecount; j++)
+					frame_durations [j] = stream.readUShort();
+
+				for (int j = 0; j < framecount; j++) {
+					frames [j] = stream.readUShort();
+					secondary_frames[j] = -1;
+				}
+				for (int j = 0; j < framecount; j++) {
+					frames [j] += stream.readUShort() << 16;
+					secondary_frames[j] = -1;
+				}
+			} else if (i == 2)
+				loop_delay = stream.readUShort();
+			else if (i == 3) {
+				int k = stream.readUnsignedByte();
+				mergedseqgroups = new int[k + 1];
+				for (int l = 0; l < k; l++)
+					mergedseqgroups[l] = stream.readUnsignedByte();
+				mergedseqgroups[k] = 9999999;
+			} else if (i == 4)
+				stretches  = true;
+			else if (i == 5)
+				priority = stream.readUnsignedByte();
+			else if (i == 6)
+				offhand = stream.readUShort();
+			else if (i == 7)
+				mainhand  = stream.readUShort();
+			else if (i == 8)
+				replaycount  = stream.readUnsignedByte();
+			else if (i == 9)
+				exactmove  = stream.readUnsignedByte();
+			else if (i == 10)
+				movetype = stream.readUnsignedByte();
+			else if (i == 11)
+				looptype = stream.readUnsignedByte();
+			else if (i == 12) {
+				int len = stream.readUnsignedByte();
+				secondary_frames = new int[len];
+				for (int i2 = 0; i2 < len; i2++) {
+					secondary_frames[i2] = stream.readUShort();
+				}
+
+				for (int i2 = 0; i2 < len; i2++) {
+					secondary_frames[i2] += stream.readUShort() << 16;
+				}
+			} else if (i == 13) {
+				int var3 = stream.readUnsignedByte();
+				frame_soundeffects = new int[var3];
+				for (int var4 = 0; var4 < var3; ++var4)
+				{
+					frame_soundeffects[var4] = stream.read24Int();
+					if (0 != frame_soundeffects[var4]) {
+						int var6 = frame_soundeffects[var4] >> 8;
+						int var8 = frame_soundeffects[var4] >> 4 & 7;
+						int var9 = frame_soundeffects[var4] & 15;
+						frame_soundeffects[var4] = var6;
+					}
+				}
+			} else if (i == 14) {
+				keyframe_id  = stream.readInt();
+			} else if (i == 15) {
+				int count = stream.readUShort();
+				skeletalsoundEffect = new int[count];
+				skeletalsoundRange = new int[count];
+				for (int index = 0; index < count; ++index) {
+					skeletalsoundEffect[index] = stream.readUShort();
+					skeletalsoundRange[index] = stream.read24Int();
+				}
+			} else if (i == 16) {
+				skeletalRangeBegin = stream.readUShort();
+				skeletalRangeEnd = stream.readUShort();
+			} else if (i == 17) {
+				int count = stream.readUnsignedByte();
+				unknown = new int[count];
+				for (int index = 0; index < count; ++index) {
+					unknown[index] = stream.readUnsignedByte();
+				}
+			} else if (i == 127) {
+				// Hidden
+			} else System.out.println("Error unrecognised seq config code: " + i);
+		}
+		if (framecount == 0) {
+			framecount = 1;
+			frames  = new int[1];
+			frames [0] = -1;
+			secondary_frames = new int[1];
+			secondary_frames[0] = -1;
+			frame_durations  = new int[1];
+			frame_durations [0] = -1;
+		}
+		if (exactmove  == -1)
+			if (mergedseqgroups != null)
+				exactmove  = 2;
+			else
+				exactmove  = 0;
+		if (movetype == -1) {
+			if (mergedseqgroups != null) {
+				movetype = 2;
+				return;
+			}
+			movetype = 0;
+		}
+	}
 	private void readValues(Buffer1 buffer) {
 		int opcode;
 		int last_op = -1;
@@ -537,7 +537,7 @@ public final class AnimationDefinition {
 
 	public static void dump() {
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter("./temp/animation_dump.txt"))) {
-			for (int index =617; index < 618; index++) {
+			for (int index =589; index < 590; index++) {
 				AnimationDefinition anim = anims[index];
 				if (anim != null) {
 					writer.write("\tcase " + index + ":");

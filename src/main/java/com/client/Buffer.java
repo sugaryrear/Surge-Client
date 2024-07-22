@@ -163,6 +163,15 @@ public final class Buffer extends Cacheable {
         payload = abyte0;
         currentPosition = 0;
     }
+    public int readShort2() {
+        currentPosition += 2;
+        int i = ((payload[currentPosition - 2] & 0xff) << 8)
+                + (payload[currentPosition - 1] & 0xff);
+        if (i > 60000)
+            i = -65535 + i;
+        return i;
+
+    }
 
     public void createFrame(int i) {
         if (Configuration.developerMode)
@@ -573,7 +582,11 @@ public final class Buffer extends Cacheable {
         return ((payload[currentPosition - 1] & 0xff) << 8)
                 + (payload[currentPosition - 2] - 128 & 0xff);
     }
-
+    public int readShortBigEndianA() {
+        currentPosition += 2;
+        return ((payload[currentPosition - 1] & 0xff) << 8)
+                + (payload[currentPosition - 2] - 128 & 0xff);
+    }
     public int method437() {
         currentPosition += 2;
         int j = ((payload[currentPosition - 1] & 0xff) << 8)

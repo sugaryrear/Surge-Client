@@ -20,7 +20,9 @@ public class Configuration {
 	public static final int CACHE_VERSION = 661; //just change this to any number up by +1 to make them download new client - 668 is ours
 	//public static final String CACHE_LINK = "https://www.dropbox.com/s/60ydf7wqcikgtyj/.zodianXv2.zip?dl=1";  //https://www.dropbox.com/s/qn9uwtdlob710r4/SurgiosV1
 	//https://www.dropbox.com/s/6ssmxumf26n9nos2n6au4/.rspsXv2.zip?dl=1
-	public static final String CACHE_LINK = "https://www.zodianx.com/downloads/.rspsXv2.zip";  //https://www.dropbox.com/s/qn9uwtdlob710r4/SurgiosV1
+
+
+	public static final String CACHE_LINK = "https://www.dropbox.com/scl/fi/rl53qc5n0o9agy32gmixv/.rspsXv2.zip?rlkey=nafrnsg1551chj06oev76dlma&st=n3l8v9ff&dl=1";  //https://www.dropbox.com/s/qn9uwtdlob710r4/SurgiosV1
 //https://www.dropbox.com/scl/fi/6ssmxumf26n9nos2n6au4/.rspsXv2.zip?rlkey=7ruteghb4ka5p08ev80hj0v87&dl=0
 	/**
 	 * The server version. The cache path is append with a _v1/2/3 etc for the version number
@@ -33,13 +35,13 @@ public class Configuration {
 
 	public static final String CLIENT_TITLE ="Runescape";//bbrgg.ddns.net
 	public static final String WEBSITE = "http://runescape.com/";//147.189.161.23
-	public static final String DEDICATED_SERVER_ADDRESS = production ? "localhost" : "localhost";//dont forgot to change this if u get updates are coming message!
+	public static final String DEDICATED_SERVER_ADDRESS = production ? "71.85.147.55" : "localhost";//dont forgot to change this if u get updates are coming message!
 	public static final int PORT = 43594; //
 	public static final int TEST_PORT = 43595;
 
 	public static final String MAPFUNCTION_SPRITE_FILE_NAME = "mapfunction_file_sprites";
 
-	public static final String CACHE_NAME = "RspsXv2";
+	public static final String CACHE_NAME = ".rspsXv2";
 	public static final String DEV_CACHE_NAME = "local_cache";
 	public static final String CACHE_NAME_DEV = CACHE_NAME + "_dev";
 
